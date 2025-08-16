@@ -57,10 +57,53 @@ combine_strains <- function(string1, string2, string3, string4){
 }
 
 
+resutls = combine_strains("YYYWGX", 
+                          "YYYWGX", 
+                          "XYYGGW", 
+                          "XYYGGW")
 
 
-test = combine_strains("WYYWYG", 
-                       "WYYWYG", 
-                       "XYYGGW", 
-                       "XYYGGW")
 
+
+
+score_strain <- function(strain) {
+  g_count <- sum(strain == "G")
+  y_count <- sum(strain == "Y")
+  dist <- abs(g_count - 2) + abs(y_count - 4)  # Manhattan distance
+  return(list(G = g_count, Y = y_count, score = dist))
+}
+
+
+
+# ----------------------------
+# Generate all repeated 4-strain combinations
+strain_group <- c("YYYWGX", "XYYGGW", "GWGYWY")
+all_combos <- expand.grid(strain_group, strain_group, strain_group, strain_group,
+                          stringsAsFactors = FALSE)
+
+# ----------------------------
+# Run combine_strains() and score each
+results <- apply(all_combos, 1, function(row) {
+  cons <- combine_strains(row[1], row[2], row[3], row[4])
+  sc <- score_strain(cons)
+  list(
+    combination = row,
+    consensus = cons,
+    G = sc$G,
+    Y = sc$Y,
+    score = sc$score
+  )
+})
+
+# ----------------------------
+# Find best results (lowest distance to 2G + 4Y)
+scores <- sapply(results, function(x) x$score)
+best_results <- results[scores == min(scores)]
+
+# ----------------------------
+# Print best results
+for (res in best_results) {
+  cat("Combination:", paste(res$combination, collapse = ", "), "\n")
+  cat("Consensus:  ", paste(res$consensus, collapse = " "), "\n")
+  cat("G count:", res$G, "Y count:", res$Y, "Score:", res$score, "\n\n")
+}
