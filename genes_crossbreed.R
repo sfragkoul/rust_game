@@ -64,7 +64,7 @@ resutls = combine_strains("YYYWGX",
 
 
 
-
+#------------------------------------------------------------------------------
 
 score_strain <- function(strain) {
   g_count <- sum(strain == "G")
