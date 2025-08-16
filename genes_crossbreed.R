@@ -37,7 +37,10 @@ consensus_strain <- function(strains) {
   return(result)
 }
 
-
+make_strain <- function(s) {
+  
+  return(strsplit(s, "")[[1]])
+}
 
 combine_strains <- function(string1, string2, string3, string4){
   
